@@ -8,6 +8,7 @@ import Home from './pages/home';
 import Articles from './pages/articles';
 import Categories from './pages/categories';
 import Users from './pages/users';
+import AddArticle from './pages/addArticle';
 
 function App() {
 	return (
@@ -18,6 +19,11 @@ function App() {
 					exact
 					path={'/admin/articles'}
 					component={Articles}
+				/>
+				<ProtectedRoute
+					exact
+					path={'/admin/articles/add'}
+					component={AddArticle}
 				/>
 				<ProtectedRoute
 					exact

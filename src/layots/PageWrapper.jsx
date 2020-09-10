@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Header from '../components/Header/';
 
-function PageWrapper({ children, className }) {
+function PageWrapper({ children }) {
 	useEffect(() => {
 		document.title = `Arthows admin`;
 	});
@@ -9,7 +9,9 @@ function PageWrapper({ children, className }) {
 	return (
 		<React.Fragment>
 			<Header />
-			<div className={`${className} container`}>{children}</div>
+			<div style={{ padding: '2em' }} className='container mt-3'>
+				{children}
+			</div>
 		</React.Fragment>
 	);
 }

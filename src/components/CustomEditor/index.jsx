@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react';
 import CKEditor from 'ckeditor4-react';
 
-function CustomEditor() {
-	useEffect(() => {
-		console.log(process.env);
-		document.title = `Arthows admin`;
-	});
-
+function CustomEditor({ name, data, onChange }) {
 	return (
 		<React.Fragment>
 			<CKEditor
-				data='<p>New article</p>'
+				name={name}
+				data={data}
+				onChange={onChange}
 				config={{
 					width: '100%',
 					height: '500',
-					filebrowserImageUploadUrl:
-						'http://localhost:2000/image-upload',
+					filebrowserImageUploadUrl: `${process.env.REACT_APP_DEV_HOST}/image-upload`,
 					toolbarGroups: [
 						{
 							name: 'paragraph',
