@@ -7,7 +7,6 @@ const showError = (error) => {
 		confirmButtonText: 'Ok',
 		icon: 'error',
 	});
-	throw new Error(error);
 };
 
 export default showError;

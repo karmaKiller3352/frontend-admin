@@ -9,11 +9,10 @@ import {
 	ListGroup,
 	Button,
 } from 'react-bootstrap';
-import CustomEditor from '../components/CustomEditor';
 import Swal from 'sweetalert2';
 
 import { getArticles, removeArticle } from '../sagas/actions/articles';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 function Articles({ getArticles, list, removeArticle }) {
 	const history = useHistory();
@@ -97,16 +96,21 @@ function Articles({ getArticles, list, removeArticle }) {
 								return (
 									<ListGroup.Item key={article._id}>
 										{article.title}
+
 										<button
 											type='button'
 											className='close'
 											onClick={removeHandler(article._id)}
 										>
 											<span aria-hidden='true'>×</span>
-											<span className='sr-only'>
-												Close
-											</span>
 										</button>
+										<Link
+											type='button'
+											className='edit-btn'
+											to={`/admin/articles/${article._id}`}
+										>
+											<span aria-hidden='true'>✎</span>
+										</Link>
 									</ListGroup.Item>
 								);
 							})}

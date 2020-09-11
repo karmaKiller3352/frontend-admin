@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PageWrapper from '../layots/PageWrapper';
 import Swal from 'sweetalert2';
@@ -12,31 +12,55 @@ import {
 	Button,
 } from 'react-bootstrap';
 import CustomEditor from '../components/CustomEditor/index';
-import { addArticle } from '../sagas/actions/articles';
+import { editArticle, setArticle } from '../sagas/actions/articles';
+import actionWrap from '../utils/actionWrapper';
 
-function AddArticle({ addArticle, opened }) {
-	const [currentFields, setField] = useState({
-		categories: '1',
-	});
+function ArticleEdit({ opened, editArticle, setArticle }) {
 	const history = useHistory();
+	const [saveBtn, setSaveBtn] = useState('');
+	const [currentFields, setField] = useState({});
+
+	const { id } = useParams();
+
+	const handlerSucces = () => {
+		Swal.fire('Success!', 'Article saved', 'success').then(() => {
+			if (saveBtn === 'save-and-return') {
+				history.push('/admin/articles/');
+			} else {
+				history.push(`/admin/articles/${currentFields._id}`);
+			}
+		});
+	};
+
+	const handlerSuccesSet = (res) => {
+		setField({ ...res, categories: res.categories._id || null });
+	};
+
+	const handlerError = (rej) => {
+		console.log(rej);
+		Swal.fire('Oops', rej, 'error');
+	};
+
+	useEffect(() => {
+		console.log(id);
+		if (id !== opened._id) {
+			actionWrap(setArticle, handlerSuccesSet, handlerError, id);
+		}
+	}, []);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
+
 		if (currentFields.content.length > 0) {
 			const data = new FormData(e.target);
 			data.append('content', currentFields.content);
-			new Promise((resolve) => {
-				addArticle(data, resolve);
-			}).then(() => {
-				Swal.fire('Success!', 'Article added', 'Success');
-			});
+			actionWrap(editArticle, handlerSucces, handlerError, data, id);
 		} else {
 			Swal.fire('Required!', 'You have to add content.', 'error');
 		}
 	};
 
 	const addFileHandler = ({ target: { name, files } }) => {
-		console.log(files[0]);
 		setField((prev) => ({
 			...prev,
 			[name]: files[0],
@@ -75,7 +99,19 @@ function AddArticle({ addArticle, opened }) {
 			}
 		});
 	};
-	console.log(currentFields);
+
+	const showPreviewImg = () => {
+		return (
+			currentFields.image && (
+				<img
+					src={currentFields.image}
+					className='preview-img'
+					alt='Preview image'
+				/>
+			)
+		);
+	};
+
 	return (
 		<PageWrapper>
 			<h2>Add article</h2>
@@ -85,11 +121,13 @@ function AddArticle({ addArticle, opened }) {
 						<Form.Group>
 							<Form.Label>Title</Form.Label>
 							<FormControl
+								type='text'
 								required='required'
 								placeholder='Input article title'
 								aria-label='title'
 								name='title'
 								onChange={changeInputHandler}
+								value={currentFields.title || ''}
 							/>
 						</Form.Group>
 						<Form.Label>URL</Form.Label>
@@ -102,6 +140,7 @@ function AddArticle({ addArticle, opened }) {
 							<FormControl
 								required='required'
 								name='url'
+								value={currentFields.url || ''}
 								onChange={changeInputHandler}
 								id='basic-url'
 								aria-describedby='basic-addon3'
@@ -116,9 +155,14 @@ function AddArticle({ addArticle, opened }) {
 								className='mr-sm-2'
 								id='inlineFormCustomSelect'
 								custom
-								value={currentFields.categories || 1}
 							>
-								<option defaultValue={1}>1</option>
+								<option
+									value={
+										currentFields.categories || 'Не выбрана'
+									}
+								>
+									Не выбрана
+								</option>
 								<option value={2}>2</option>
 								<option value={3}>3</option>
 								<option value={4}>4</option>
@@ -133,6 +177,7 @@ function AddArticle({ addArticle, opened }) {
 								placeholder='Article title'
 								aria-label='Meta title'
 								name='metaTitle'
+								value={currentFields.metaTitle || ''}
 							/>
 						</Form.Group>
 						<Form.Group>
@@ -143,16 +188,18 @@ function AddArticle({ addArticle, opened }) {
 								placeholder='Article description'
 								aria-label='Meta description'
 								name='metaDesc'
+								value={currentFields.metaDesc || ''}
 							/>
 						</Form.Group>
 						<Form.Group className='mt-3'>
 							<CustomEditor
-								data={'1'}
+								data={currentFields.content}
 								name='content'
 								onChange={editorHandler}
 							/>
 						</Form.Group>
 
+						<Form.Group>{showPreviewImg()}</Form.Group>
 						<Form.Group className='mt-3'>
 							<Form.File.Label>Article thumb</Form.File.Label>
 							<input
@@ -176,11 +223,23 @@ function AddArticle({ addArticle, opened }) {
 							</Col>
 
 							<Col className='text-right'>
-								<Button type='submit' className='btn-info'>
+								<Button
+									type='submit'
+									onClick={() => {
+										setSaveBtn('save-and-edit');
+									}}
+									className='btn-info'
+								>
 									Save and edit
 								</Button>
 								&#8195; &#8195;
-								<Button type='submit' className='btn-success'>
+								<Button
+									type='submit'
+									onClick={() => {
+										setSaveBtn('save-and-return');
+									}}
+									className='btn-success'
+								>
 									Save and exit
 								</Button>
 							</Col>
@@ -192,11 +251,12 @@ function AddArticle({ addArticle, opened }) {
 	);
 }
 const mapDispatchtoProps = {
-	addArticle,
+	editArticle,
+	setArticle,
 };
 
 const mapStatetoProps = (state) => ({
 	opened: state.articles.opened,
 });
 
-export default connect(mapStatetoProps, mapDispatchtoProps)(AddArticle);
+export default connect(mapStatetoProps, mapDispatchtoProps)(ArticleEdit);

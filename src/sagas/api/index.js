@@ -6,7 +6,7 @@ const token = cookie.get('TR_token') ? cookie.get('TR_token') : null;
 axios.defaults.headers.common['Authorization'] = `${token}`;
 
 const API = {
-	ARTICLES: `${process.env.REACT_APP_DEV_HOST}/articles/`,
+	ARTICLES: `/articles/`,
 };
 
 export const requestArticles = async (params) => {
@@ -30,10 +30,48 @@ export const requestRemoveArticle = async (id) => {
 export const requestAddArticle = async (formData) => {
 	try {
 		const { data } = await axios.post(API.ARTICLES, formData, {
-			headers: 'Content-Type: multipart/form-data; boundary=something',
+			headers: { 'Access-Control-Allow-Origin': '*' },
+			mode: 'cors',
 		});
 		return data;
 	} catch (error) {
-		showError(error);
+		return {
+			error: {
+				message: error.response.data.message,
+			},
+		};
+	}
+};
+
+export const requestEditArticle = async (formData, id) => {
+	try {
+		const { data } = await axios.patch(API.ARTICLES + id, formData, {
+			headers: { 'Access-Control-Allow-Origin': '*' },
+			mode: 'cors',
+		});
+		return data;
+	} catch (error) {
+		console.log(error.response)
+		return {
+			error: {
+				message: error.response.data.message,
+			},
+		};
+	}
+};
+
+export const requestGetArticle = async (id) => {
+	try {
+		const { data } = await axios.get(API.ARTICLES + id, {
+			headers: { 'Access-Control-Allow-Origin': '*' },
+			mode: 'cors',
+		});
+		return data;
+	} catch (error) {
+		return {
+			error: {
+				message: error.response.data.message,
+			},
+		};
 	}
 };

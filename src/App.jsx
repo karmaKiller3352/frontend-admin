@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Switch,  } from 'react-router-dom';
 
 import './App.scss';
 
@@ -8,7 +8,8 @@ import Home from './pages/home';
 import Articles from './pages/articles';
 import Categories from './pages/categories';
 import Users from './pages/users';
-import AddArticle from './pages/addArticle';
+import ArticleEdit from './pages/articleEdit';
+import ArticleAdd from './pages/articleAdd';
 
 function App() {
 	return (
@@ -23,7 +24,12 @@ function App() {
 				<ProtectedRoute
 					exact
 					path={'/admin/articles/add'}
-					component={AddArticle}
+					component={ArticleAdd}
+				/>
+				<ProtectedRoute
+					exact
+					path={'/admin/articles/:id'}
+					component={ArticleEdit}
 				/>
 				<ProtectedRoute
 					exact

@@ -6,3 +6,9 @@ export const SAGA_REMOVE_ARTICLE = 'SAGA_REMOVE_ARTICLE';
 
 export const ADD_ARTICLE = 'ADD_ARTICLE';
 export const SAGA_ADD_ARTICLE = 'SAGA_ADD_ARTICLE';
+
+export const SET_ARTICLE = 'SET_ARTICLE';
+export const SAGA_SET_ARTICLE = 'SAGA_SET_ARTICLE';
+
+export const EDIT_ARTICLE = 'EDIT_ARTICLE';
+export const SAGA_EDIT_ARTICLE = 'SAGA_EDIT_ARTICLE';

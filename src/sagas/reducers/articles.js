@@ -2,6 +2,7 @@ import {
 	GET_ARTICLES,
 	REMOVE_ARTICLE,
 	ADD_ARTICLE,
+	SET_ARTICLE,
 } from '../constants/articles';
 
 const initState = {
@@ -10,10 +11,11 @@ const initState = {
 };
 
 const articlesReducer = (state = initState, action) => {
-	console.log(action);
 	switch (action.type) {
+		case SET_ARTICLE:
+			return { ...state, opened: action.payload };
 		case ADD_ARTICLE:
-			return { ...state, list: [...state.list, action.payload] };
+			return { ...state, list: [action.payload, ...state.list] };
 		case GET_ARTICLES:
 			return { ...state, list: action.payload };
 		case REMOVE_ARTICLE:

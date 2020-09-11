@@ -6,6 +6,7 @@ function CustomEditor({ name, data, onChange }) {
 		<React.Fragment>
 			<CKEditor
 				name={name}
+				
 				data={data}
 				onChange={onChange}
 				config={{
