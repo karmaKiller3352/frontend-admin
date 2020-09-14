@@ -3,7 +3,6 @@ import {
 	SAGA_REMOVE_ARTICLE,
 	SAGA_ADD_ARTICLE,
 	SAGA_EDIT_ARTICLE,
-	SET_ARTICLE,
 	SAGA_SET_ARTICLE,
 } from '../constants/articles';
 

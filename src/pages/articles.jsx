@@ -24,7 +24,6 @@ function Articles({ getArticles, list, removeArticle }) {
 		Swal.fire({
 			title: 'Remove article?',
 			text: 'Do you want to continue?',
-			confirmButtonText: 'Cool',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes, delete it!',
