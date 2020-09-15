@@ -11,8 +11,11 @@ const API = {
 };
 
 export const requestArticles = async (params) => {
+  console.log(params)
   try {
-    const { data } = await axios.get(API.ARTICLES);
+
+    const query = params ? Object.keys(params).reduce((acc, key) => acc+`${key}=${params[key]}&`, "?") : '';
+    const { data } = await axios.get(API.ARTICLES+query);
     return data;
   } catch (error) {
     showError(error);

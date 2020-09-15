@@ -13,12 +13,18 @@ import Swal from 'sweetalert2';
 
 import { getArticles, removeArticle } from '../sagas/actions/articles';
 import { useHistory, Link } from 'react-router-dom';
+import { getCategories } from '../sagas/actions/categories';
+import Filter from "../components/Filter";
 
-function Articles({ getArticles, list, removeArticle }) {
+function Articles({ getArticles, list, removeArticle}) {
+
+
 	const history = useHistory();
 	useEffect(() => {
 		getArticles();
-	}, []);
+  }, []);
+
+ 
 
 	const removeHandler = (id) => (e) => {
 		Swal.fire({
@@ -64,28 +70,7 @@ function Articles({ getArticles, list, removeArticle }) {
 				</Col>
 			</Row>
 
-			<Form>
-				<Row>
-					<Col>
-						<Form.Group>
-							<Form.Label>Search article</Form.Label>
-							<FormControl type='text' placeholder='Search' />
-						</Form.Group>
-					</Col>
-					<Col>
-						<Form.Group>
-							<Form.Label>Select category</Form.Label>
-							<Form.Control as='select'>
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-							</Form.Control>
-						</Form.Group>
-					</Col>
-				</Row>
-			</Form>
+			<Filter/>
 
 			<Row>
 				<Col>
@@ -123,12 +108,12 @@ function Articles({ getArticles, list, removeArticle }) {
 
 const mapDispatchtoProps = {
 	getArticles,
-	removeArticle,
+  removeArticle,
+  getCategories
 };
 
 const mapStatetoProps = (state) => ({
 	list: state.articles.list,
-	opened: state.articles.opened,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(Articles);
