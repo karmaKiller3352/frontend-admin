@@ -75,8 +75,8 @@ function Articles({ getArticles, list, removeArticle}) {
 			<Row>
 				<Col>
 					<ListGroup className='articles'>
-						{list &&
-							list.map((article) => {
+						{list.articles &&
+							list.articles.map((article) => {
 								return (
 									<ListGroup.Item key={article._id}>
 										{article.title}

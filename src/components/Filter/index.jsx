@@ -1,33 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getCategories } from '../../sagas/actions/categories';
-import { getArticles } from "../../sagas/actions/articles";
+import { getArticles } from '../../sagas/actions/articles';
 
-import { Form, Row, Col, FormControl } from 'react-bootstrap';
+import { Form, Row, Col, FormControl, Pagination } from 'react-bootstrap';
 
-
-
-function Filter({ catList, getCategories, getArticles }) {
-
-  const [query, setQuery] = useState({
-    page: 1,
-    search: "",
-    search: ""
-  });
-
+function Filter({ catList, getCategories, getArticles, pagination }) {
+	const [query, setQuery] = useState({
+		page: 1,
+		search: '',
+	});
+  console.log(pagination)
 	const addFilterHandler = ({ target: { name, value } }) => {
-    setQuery((state) => ({
-      ...state,
-      [name]: value
-    }));
+		setQuery((state) => ({
+			...state,
+			[name]: value,
+		}));
 	};
 	useEffect(() => {
 		if (catList.length === 0) getCategories();
 	}, [catList, getCategories]);
 
-  useEffect(() => {
-    getArticles(query)
-  }, [query, getArticles])
+	useEffect(() => {
+		getArticles(query);
+	}, [query, getArticles]);
+
+	const showPagination = () => {
+    const active = pagination.page;
+    const items = [];
+    for (let number = 1; number <= pagination.pages; number++) {
+      items.push(
+        <Pagination.Item key={number} active={number === active}>
+          {number}
+        </Pagination.Item>,
+      );
+    }
+    console.log(items)
+		return (
+			<div className='filter-pagination'>
+				<Pagination>
+          {pagination.pages > 1 
+          ? items
+          : null
+        }
+				</Pagination>
+			</div>
+		);
+	};
 
 	const showCategories = () => {
 		return (
@@ -49,21 +68,21 @@ function Filter({ catList, getCategories, getArticles }) {
 								</option>
 							);
 						})}
-					<option>Not choosed</option>
+					<option value={null}>Not choosed</option>
 				</Form.Control>
 			</Form.Group>
 		);
 	};
 
 	return (
-		<Form>
+		<div>
 			<Row>
 				<Col>
 					<Form.Group>
 						<Form.Label>Search article</Form.Label>
 						<FormControl
-              type='text'
-              name="search"
+							type='text'
+							name='search'
 							placeholder='Search'
 							onChange={addFilterHandler}
 						/>
@@ -71,16 +90,23 @@ function Filter({ catList, getCategories, getArticles }) {
 				</Col>
 				<Col>{showCategories()}</Col>
 			</Row>
-		</Form>
+      {showPagination()}
+		</div>
+    
 	);
 }
 const mapDispatchtoProps = {
-  getCategories,
-  getArticles,
+	getCategories,
+	getArticles,
 };
 
 const mapStatetoProps = (state) => ({
 	catList: state.categories.list,
+	pagination: {
+		count: state.articles.list.count,
+		pages: state.articles.list.pages,
+		page: Number(state.articles.list.page),
+	},
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(Filter);
