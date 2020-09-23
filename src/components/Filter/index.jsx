@@ -13,7 +13,8 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 	});
 	const categoriesHandler = ({ target: { name, value } }) => {
 		setQuery((state) => ({
-			...state,
+      ...state,
+      page: 1,
 			[name]: value,
 		}));
 	};
@@ -21,7 +22,8 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 	const searchHandler = ({ target: { value } }) => {
 		if (value.length > 2 || value.length === 0) {
 			setQuery((state) => ({
-				...state,
+        ...state,
+        page: 1,
 				search: value,
 			}));
 		}
@@ -38,10 +40,14 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 	}, [getCategories]);
 
 	useEffect(() => {
+    console.log(query)
 		getArticles(query);
-	}, [query, getArticles]);
-
+  }, [query, getArticles]);
+  
+  console.log(pagination)
 	const showPagination = () => {
+    if(!pagination) return null
+    
 		const active = pagination.page;
 		const items = [];
 		for (let number = 1; number <= pagination.pages; number++) {
@@ -74,14 +80,15 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 					id='inlineFormCustomSelect'
 					custom
 				>
-					{catList &&
-						catList.map((cat) => {
-							return (
-								<option value={cat._id} key={cat._id}>
-									{cat.title}
-								</option>
-							);
-						})}
+					{catList
+						? catList.map((cat) => {
+								return (
+									<option value={cat._id} key={cat._id}>
+										{cat.title}
+									</option>
+								);
+						  })
+						: null}
 					<option value={null}>Not choosed</option>
 				</Form.Control>
 			</Form.Group>
@@ -113,13 +120,11 @@ const mapDispatchtoProps = {
 	getArticles,
 };
 
-const mapStatetoProps = (state) => ({
-	catList: state.categories.list.categories,
-	pagination: {
-		count: state.articles.list.count,
-		pages: state.articles.list.pages,
-		page: state.articles.list.page,
-	},
-});
+const mapStatetoProps = (state) => {
+	return {
+		catList: state.categories.list,
+		pagination: state.articles.pagination,
+	};
+};
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(Filter);

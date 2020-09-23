@@ -15,7 +15,8 @@ function FilterCategories({  getCategories, pagination }) {
 	const searchHandler = ({ target: { value } }) => {
 		if (value.length > 2 || value.length === 0) {
 			setQuery((state) => ({
-				...state,
+        ...state,
+        page: 1,
 				search: value,
 			}));
 		}
@@ -35,8 +36,12 @@ function FilterCategories({  getCategories, pagination }) {
 
 
 	const showPagination = () => {
+
+    if(!pagination) return null
+   
 		const active = pagination.page;
-		const items = [];
+    const items = [];
+    console.log(pagination)
 		for (let number = 1; number <= pagination.pages; number++) {
 			items.push(
 				<Pagination.Item
@@ -83,12 +88,8 @@ const mapDispatchtoProps = {
 };
 
 const mapStatetoProps = (state) => ({
-	catList: state.categories.list.categories,
-	pagination: {
-		count: state.categories.list.count,
-		pages: state.categories.list.pages,
-		page: state.categories.list.page,
-	},
+	catList: state.categories.list,
+	pagination: state.categories.pagination,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(FilterCategories);

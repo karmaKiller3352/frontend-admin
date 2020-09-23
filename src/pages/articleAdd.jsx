@@ -269,7 +269,7 @@ const mapDispatchtoProps = {
 };
 
 const mapStatetoProps = (state) => ({
-  catList: state.categories.list.categories,
+  catList: state.categories.list,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(ArticleAdd);

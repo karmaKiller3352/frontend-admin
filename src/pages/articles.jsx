@@ -17,7 +17,6 @@ import Filter from "../components/Filter";
 
 function Articles({ getArticles, list, removeArticle}) {
 
-
 	const history = useHistory();
 	useEffect(() => {
 		getArticles();
@@ -74,8 +73,8 @@ function Articles({ getArticles, list, removeArticle}) {
 			<Row>
 				<Col>
 					<ListGroup className='articles'>
-						{list.articles &&
-							list.articles.map((article) => {
+						{list &&
+							list.map((article) => {
 								return (
 									<ListGroup.Item key={article._id}>
 										{article.title}
@@ -111,7 +110,7 @@ const mapDispatchtoProps = {
 };
 
 const mapStatetoProps = (state) => ({
-	list: state.articles,
+	list: state.articles.list,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(Articles);

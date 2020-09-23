@@ -20,7 +20,7 @@ const articlesReducer = (state = initState, action) => {
     case EDIT_ARTICLE:
       return { ...state, opened: action.payload };
     case GET_ARTICLES:
-      return { ...state, list: action.payload };
+      return { ...state, list: action.payload.articles, pagination: action.payload.pagination };
     case REMOVE_ARTICLE:
       return {
         ...state,

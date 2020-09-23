@@ -12,7 +12,7 @@ const categoriesReducer = (state = initState, action) => {
 		case ADD_CATEGORY:
 			return { ...state, list: [action.payload, ...state.list] };
 		case GET_CATEGORIES:
-			return { ...state, list: action.payload };
+			return { ...state, list: action.payload.categories, pagination: action.payload.pagination };
 		case REMOVE_CATEGORY:
 			return {
 				...state,
