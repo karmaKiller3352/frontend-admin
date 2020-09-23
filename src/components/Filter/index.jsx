@@ -12,7 +12,6 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 		search: '',
 	});
 	const categoriesHandler = ({ target: { name, value } }) => {
-		console.log(name);
 		setQuery((state) => ({
 			...state,
 			[name]: value,
