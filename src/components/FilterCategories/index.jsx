@@ -5,19 +5,12 @@ import { getArticles } from '../../sagas/actions/articles';
 
 import { Form, Row, Col, FormControl, Pagination } from 'react-bootstrap';
 
-function Filter({ catList, getCategories, getArticles, pagination }) {
-	const queryCat = { page: 'all' };
+function FilterCategories({  getCategories, pagination }) {
 	const [query, setQuery] = useState({
 		page: 1,
 		search: '',
 	});
-	const categoriesHandler = ({ target: { name, value } }) => {
-		console.log(name);
-		setQuery((state) => ({
-			...state,
-			[name]: value,
-		}));
-	};
+
 
 	const searchHandler = ({ target: { value } }) => {
 		if (value.length > 2 || value.length === 0) {
@@ -35,12 +28,11 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 		}));
 	};
 	useEffect(() => {
-		getCategories(queryCat);
-	}, [getCategories]);
+		getCategories(query);
+	}, [getCategories, query]);
 
-	useEffect(() => {
-		getArticles(query);
-	}, [query, getArticles]);
+
+
 
 	const showPagination = () => {
 		const active = pagination.page;
@@ -63,31 +55,7 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 		);
 	};
 
-	const showCategories = () => {
-		return (
-			<Form.Group>
-				<Form.Label>Select category</Form.Label>
-				<Form.Control
-					name='categories'
-					onChange={categoriesHandler}
-					as='select'
-					className='mr-sm-2'
-					id='inlineFormCustomSelect'
-					custom
-				>
-					{catList &&
-						catList.map((cat) => {
-							return (
-								<option value={cat._id} key={cat._id}>
-									{cat.title}
-								</option>
-							);
-						})}
-					<option value={null}>Not choosed</option>
-				</Form.Control>
-			</Form.Group>
-		);
-	};
+
 
 	return (
 		<div>
@@ -102,8 +70,8 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 							onChange={searchHandler}
 						/>
 					</Form.Group>
+
 				</Col>
-				<Col>{showCategories()}</Col>
 			</Row>
 			{showPagination()}
 		</div>
@@ -117,10 +85,10 @@ const mapDispatchtoProps = {
 const mapStatetoProps = (state) => ({
 	catList: state.categories.list.categories,
 	pagination: {
-		count: state.articles.list.count,
-		pages: state.articles.list.pages,
-		page: state.articles.list.page,
+		count: state.categories.list.count,
+		pages: state.categories.list.pages,
+		page: state.categories.list.page,
 	},
 });
 
-export default connect(mapStatetoProps, mapDispatchtoProps)(Filter);
+export default connect(mapStatetoProps, mapDispatchtoProps)(FilterCategories);

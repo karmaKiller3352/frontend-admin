@@ -51,7 +51,6 @@ function* sagaEditArticle({ payload: { formData, id, resolve, reject } }) {
     yield call(reject, article.error.message);
   } else {
     const updated = Object.fromEntries(formData);
-    console.log(updated);
     yield put({ type: EDIT_ARTICLE, payload: updated });
     yield call(resolve, updated);
   }

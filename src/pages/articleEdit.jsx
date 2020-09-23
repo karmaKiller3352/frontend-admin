@@ -24,6 +24,8 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
   const imgUploadRef = useRef();
   const [previewImage, setPreview] = useState(currentFields.image);
 
+  const queryCat = { page: 'all' };
+
   const handleSuccesSet = (res) => {
     setField(res);
     setPreview(res.image);
@@ -44,8 +46,8 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
   }, []);
 
   useEffect(() => {
-    if (catList.length === 0) getCategories();
-  }, [catList]);
+    getCategories(queryCat);
+  }, []);
 
   useEffect(() => {
     function fileLoader(input) {
@@ -314,7 +316,7 @@ const mapDispatchtoProps = {
 };
 
 const mapStatetoProps = (state) => ({
-  catList: state.categories.list,
+  catList: state.categories.list.categories,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(ArticleEdit);

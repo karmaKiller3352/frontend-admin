@@ -13,7 +13,6 @@ import Swal from 'sweetalert2';
 
 import { getArticles, removeArticle } from '../sagas/actions/articles';
 import { useHistory, Link } from 'react-router-dom';
-import { getCategories } from '../sagas/actions/categories';
 import Filter from "../components/Filter";
 
 function Articles({ getArticles, list, removeArticle}) {
@@ -109,7 +108,6 @@ function Articles({ getArticles, list, removeArticle}) {
 const mapDispatchtoProps = {
 	getArticles,
   removeArticle,
-  getCategories
 };
 
 const mapStatetoProps = (state) => ({

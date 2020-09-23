@@ -45,3 +45,19 @@ button {
     font-size: 40px;
   }
 }
+
+.filter-pagination {
+  position: fixed;
+  bottom: 20px;
+  z-index: 100;
+  @media (max-width:600px) {
+    left: 0;
+    bottom: 40%;
+    .pagination{
+      flex-direction: column;
+      .page-link{
+        border-radius: 0;
+      }
+    }
+  }
+}

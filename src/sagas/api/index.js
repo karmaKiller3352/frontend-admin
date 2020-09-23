@@ -11,9 +11,7 @@ const API = {
 };
 
 export const requestArticles = async (params) => {
-  console.log(params)
   try {
-
     const query = params ? Object.keys(params).reduce((acc, key) => acc+`${key}=${params[key]}&`, "?") : '';
     const { data } = await axios.get(API.ARTICLES+query);
     return data;
@@ -79,7 +77,8 @@ export const requestGetArticle = async (id) => {
 
 export const requestCategories = async (params) => {
   try {
-    const { data } = await axios.get(API.CATEGORIES);
+    const query = params ? Object.keys(params).reduce((acc, key) => acc+`${key}=${params[key]}&`, "?") : '';
+    const { data } = await axios.get(API.CATEGORIES+query);
     return data;
   } catch (error) {
     showError(error);

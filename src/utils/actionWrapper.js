@@ -3,7 +3,6 @@ const actionWrap = (action, resolveFunc, rejectFunc, ...args) => {
     action(...args, resolve, reject);
   })
     .then((res) => {
-      console.log("done1");
       resolveFunc(res);
     })
     .catch((rej) => {

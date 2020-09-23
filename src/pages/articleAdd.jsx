@@ -24,16 +24,14 @@ function ArticleAdd({ addArticle, getCategories, catList }) {
     categories: "5f540f375d1a666be4808a9c",
     content: "",
   });
-
+  const queryCat = { page: 'all' };
   const imgUploadRef = useRef();
 
   const [previewImage, setPreview] = useState();
 
   useEffect(() => {
-    if (catList.length === 0) {
-      getCategories();
-    }
-  }, [catList]);
+      getCategories(queryCat);
+  }, []);
 
   useEffect(() => {
     imgUploadRef.current.addEventListener("change", (input) => {
@@ -271,7 +269,7 @@ const mapDispatchtoProps = {
 };
 
 const mapStatetoProps = (state) => ({
-  catList: state.categories.list,
+  catList: state.categories.list.categories,
 });
 
 export default connect(mapStatetoProps, mapDispatchtoProps)(ArticleAdd);
