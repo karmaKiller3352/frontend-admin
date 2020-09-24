@@ -1,8 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { connect } from "react-redux";
-import PageWrapper from "../layots/PageWrapper";
-import Swal from "sweetalert2";
 import {
   Form,
   Row,
@@ -11,65 +7,104 @@ import {
   InputGroup,
   Button,
 } from "react-bootstrap";
-import CustomEditor from "../components/CustomEditor/index";
-import { editArticle, setArticle } from "../sagas/actions/articles";
-import actionWrap from "../utils/actionWrapper";
-import { getCategories } from "../sagas/actions/categories";
+import { useHistory } from "react-router-dom";
+import { connect } from 'react-redux';
+import Swal from "sweetalert2";
+import { setCategory, editCategory, addCategory } from "../../sagas/actions/categories";
+import actionWrap from '../../utils/actionWrapper';
+import CustomEditor from '../CustomEditor/index';
+import getUrl from '../../utils/getUrlFromTitle';
 
-function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
-  const history = useHistory();
-  const { id } = useParams();
-  const [saveBtn, setSaveBtn] = useState("");
-  const [currentFields, setField] = useState({});
+function CategoryAddEdit({id, setCategory, editCategory, addCategory}) {
   const imgUploadRef = useRef();
-  const [previewImage, setPreview] = useState(currentFields.image);
 
-  const queryCat = { page: 'all' };
+  const history = useHistory();
 
-  const handleSuccesSet = (res) => {
-    setField(res);
-    setPreview(res.image);
-  };
-  const handleError = (rej) => Swal.fire("Oops", rej, "error");
-  const handleSucces = () => {
-    Swal.fire("Success!", "Article saved", "success").then(() => {
-      if (saveBtn === "save-and-return") {
-        history.push("/admin/articles/");
-      } else {
-        history.push(`/admin/articles/${currentFields._id}`);
+  const [currentFields, setField] = useState({
+    content: "",
+  });
+  const [articles, setArticles] = useState([]);
+  const [saveBtn, setSaveBtn] = useState("");
+  const [previewImage, setPreview] = useState(currentFields.image && null);
+
+  const handleBack = () => {
+    Swal.fire({
+      title: "Close adding?",
+      text: "Do you want to continue?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        history.push("/admin/categories/");
       }
     });
   };
 
-  useEffect(() => {
-    actionWrap(setArticle, handleSuccesSet, handleError, id);
-  }, []);
+  const handleError = (rej) => Swal.fire("Oops", rej, "error");
 
-  useEffect(() => {
-    getCategories(queryCat);
-  }, []);
+  const handleSuccesSet = (res) => {
+      setField(res.category);
+      setArticles(res.articles);
+      setPreview(res.category.image);
+  };
 
-  useEffect(() => {
-    function fileLoader(input) {
-      const reader = new FileReader();
-      reader.readAsDataURL(input.target.files[0]);
-      reader.onload = function (e) {
-        setPreview(e.target.result);
-      };
-    }
+  const handleSucces = (cat) => {
+    Swal.fire("Success!", "Category saved", "success").then(() => {
+      if (saveBtn === "save-and-return") {
+        history.push("/admin/categories/");
+      } else {
+        if(cat._id) {
+          history.push(`/admin/categories/${cat._id}`);
+        } else {
+          history.push(`/admin/categories/${currentFields._id}`);
+        }
+        
+      }
+    });
+  };
+  
+  const changeInputHandler = ({ target: { name, value } }) => {
+    setField((prev) => ({
+      ...prev,
+      ...{
+        [name]: value,
+      },
+    }));
+  };
 
-    imgUploadRef.current.addEventListener("change", fileLoader);
+  const editorHandler = (e) => {
+    setField((prev) => ({
+      ...prev,
+      ...{
+        content: e.editor.getData(),
+      },
+    }));
+  };
 
-    return () => {
-      imgUploadRef.current.removeEventListener("change", fileLoader);
-    };
-  }, [currentFields, previewImage, imgUploadRef]);
+  const removeImgHandler = () => {
+    setPreview("");
+    setField((prev) => ({
+      ...prev,
+      image: "",
+    }));
+  };
 
-  useEffect(() => {
-    if (typeof previewImage === "object") {
-      setPreview(currentFields.image);
-    }
-  });
+  const addFileHandler = ({ target: { name, files } }) => {
+    setField((prev) => ({
+      ...prev,
+      [name]: files[0],
+    }));
+  };
+
+  const urlHandler = ({ target: { value } }) => {
+    if(id) return
+    setField((prev) => ({
+      ...prev,
+      url: getUrl(value),
+    }));
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -85,102 +120,46 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
       if (data.get("categories") === "Not choosed") {
         data.delete("categories");
       }
-      actionWrap(editArticle, handleSucces, handleError, data, id);
+      if(id) {
+        actionWrap(editCategory, handleSucces, handleError, data, id);
+      } else{
+        actionWrap(addCategory, handleSucces, handleError, data);
+      }
+      
     } else {
       Swal.fire("Required!", "You have to add content.", "error");
     }
   };
 
-  const removeImgHandler = () => {
-    setPreview("");
-    setField((prev) => ({
-      ...prev,
-      image: "",
-    }));
-  };
-  const addFileHandler = ({ target: { name, files } }) => {
-    setField((prev) => ({
-      ...prev,
-      [name]: files[0],
-    }));
-  };
 
-  const editorHandler = (e) => {
-    setField((prev) => ({
-      ...prev,
-      ...{
-        content: e.editor.getData(),
-      },
-    }));
-  };
+  useEffect(()=> {
+    if(id) {
+      actionWrap(setCategory, handleSuccesSet, handleError, id);
+    }
+  }, []);
 
-  const changeInputHandler = ({ target: { name, value } }) => {
-    setField((prev) => ({
-      ...prev,
-      ...{
-        [name]: value,
-      },
-    }));
-  };
+  useEffect(() => {
+    function fileLoader(input) {
+      const reader = new FileReader();
+      reader.readAsDataURL(input.target.files[0]);
+      reader.onload = function (e) {
+        setPreview(e.target.result);
+      };
+    }
+    imgUploadRef.current.addEventListener("change", fileLoader);
+    return () => {
+      imgUploadRef.current.removeEventListener("change", fileLoader);
+    };
+  }, [currentFields, previewImage, imgUploadRef]);
 
-  const handleBack = () => {
-    Swal.fire({
-      title: "Close adding?",
-      text: "Do you want to continue?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        history.push("/admin/articles/");
-      }
-    });
-  };
-
-  const showCategories = () => {
-    return (
-      <Form.Group>
-        <Form.Label>Select category</Form.Label>
-        <Form.Control
-          name="categories"
-          as="select"
-          className="mr-sm-2"
-          id="inlineFormCustomSelect"
-          custom
-        >
-          {currentFields.categories ? (
-            <option value={currentFields.categories._id}>
-              {currentFields.categories.title}
-            </option>
-          ) : (
-            <option defaultValue>Not choosed</option>
-          )}
-
-          {catList &&
-            catList
-              .filter((cat) => {
-                return currentFields.categories
-                  ? currentFields.categories._id !== cat._id
-                  : true;
-              })
-              .map((cat) => {
-                return (
-                  <option value={cat._id} key={cat._id}>
-                    {cat.title}
-                  </option>
-                );
-              })}
-          {currentFields.categories ? <option>Not choosed</option> : null}
-        </Form.Control>
-      </Form.Group>
-    );
-  };
+  useEffect(() => {
+    if (typeof previewImage === "object") {
+      setPreview(currentFields.image);
+    }
+  });
 
   return (
-    <PageWrapper>
-      <h2>Edit article</h2>
-      <Row>
+    <Row>
         <Col>
           <Form onSubmit={submitHandler}>
             <Form.Group>
@@ -188,9 +167,10 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
               <FormControl
                 type="text"
                 required="required"
-                placeholder="Input article title"
+                placeholder="Input category title"
                 aria-label="title"
                 name="title"
+                onKeyUp={urlHandler}
                 onChange={changeInputHandler}
                 value={currentFields.title || ""}
               />
@@ -199,7 +179,7 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
             <InputGroup className="mb-3">
               <InputGroup.Prepend>
                 <InputGroup.Text>
-                  {`${process.env.REACT_APP_DEV_HOST}/articles/`}
+                  {`${process.env.REACT_APP_DEV_HOST}/categories/`}
                 </InputGroup.Text>
               </InputGroup.Prepend>
               <FormControl
@@ -211,7 +191,6 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
                 aria-describedby="basic-addon3"
               />
             </InputGroup>
-            {showCategories()}
 
             <Form.Group>
               <Form.Label>Meta title</Form.Label>
@@ -261,7 +240,7 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
               ) : null}
             </Form.Group>
             <Form.Group className={previewImage ? "hidden" : ""}>
-              <Form.File.Label htmlFor="formcheck-api-regular">Article thumb: <span className="false-link">No file choosed</span></Form.File.Label>
+              <Form.File.Label htmlFor="formcheck-api-regular">Category thumb: <span className="false-link">No file choosed</span></Form.File.Label>
               <input
                 className="form-control-file"
                 type="file"
@@ -309,17 +288,15 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
           </Form>
         </Col>
       </Row>
-    </PageWrapper>
-  );
-}
-const mapDispatchtoProps = {
-  editArticle,
-  setArticle,
-  getCategories,
+  )
 };
 
-const mapStatetoProps = (state) => ({
-  catList: state.categories.list,
-});
+const mapDispatchtoProps = {
+  setCategory,
+  editCategory,
+  addCategory,
+};
 
-export default connect(mapStatetoProps, mapDispatchtoProps)(ArticleEdit);
+
+
+export default connect(null, mapDispatchtoProps)(CategoryAddEdit);

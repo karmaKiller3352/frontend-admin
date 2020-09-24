@@ -10,13 +10,44 @@ import {
 	ListGroup,
 	Button,
 } from 'react-bootstrap';
-import { getCategories } from '../sagas/actions/categories';
+import Swal from 'sweetalert2';
+import { getCategories, removeCategory } from '../sagas/actions/categories';
 import FilterCategories from '../components/FilterCategories';
 
-function Categories({ list, getCategories }) {
+import actionWrap from '../utils/actionWrapper';
+
+function Categories({ list, getCategories, removeCategory }) {
 	useEffect(() => {
-	 getCategories();
+		getCategories();
 	}, [getCategories]);
+
+	const history = useHistory();
+
+	const addHandler = () => {
+		history.push('/admin/categories/add');
+	};
+
+	const removeSuccesHandle = () => {
+		Swal.fire('Deleted!', 'Article has been deleted.', 'success');
+	};
+
+	const handleError = (rej) => Swal.fire('Oops', rej, 'error');
+
+	const removeHandler = (id) => (e) => {
+		Swal.fire({
+			title: 'Remove article?',
+			text: 'Do you want to continue?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, delete it!',
+			cancelButtonText: 'No, cancel!',
+		}).then((result) => {
+			if (result.isConfirmed) {
+				actionWrap(removeCategory, removeSuccesHandle, handleError, id);
+			}
+		});
+	};
+
 	return (
 		<PageWrapper>
 			<Row className='justify-content-between'>
@@ -24,7 +55,7 @@ function Categories({ list, getCategories }) {
 					<h2>Categories</h2>
 				</Col>
 				<Col className='text-right'>
-					<Button type='button' className='btn-success'>
+					<Button onClick={addHandler} type='button' className='btn-success'>
 						Add category
 					</Button>
 				</Col>
@@ -39,13 +70,17 @@ function Categories({ list, getCategories }) {
 									<ListGroup.Item key={cat._id}>
 										{cat.title}
 
-										<button type='button' className='close'>
+										<button
+											type='button'
+											onClick={removeHandler(cat._id)}
+											className='close'
+										>
 											<span aria-hidden='true'>×</span>
 										</button>
 										<Link
 											type='button'
 											className='edit-btn'
-											to={`/admin/category/${cat._id}`}
+											to={`/admin/categories/${cat._id}`}
 										>
 											<span aria-hidden='true'>✎</span>
 										</Link>
@@ -61,6 +96,7 @@ function Categories({ list, getCategories }) {
 
 const mapDispatchtoProps = {
 	getCategories,
+	removeCategory,
 };
 
 const mapStatetoProps = (state) => {

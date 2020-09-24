@@ -41,7 +41,6 @@ function FilterCategories({  getCategories, pagination }) {
    
 		const active = pagination.page;
     const items = [];
-    console.log(pagination)
 		for (let number = 1; number <= pagination.pages; number++) {
 			items.push(
 				<Pagination.Item

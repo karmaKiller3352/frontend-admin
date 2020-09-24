@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { getArticles, removeArticle } from '../sagas/actions/articles';
 import { useHistory, Link } from 'react-router-dom';
 import Filter from "../components/Filter";
+import actionWrap from '../utils/actionWrapper';
 
 function Articles({ getArticles, list, removeArticle}) {
 
@@ -22,7 +23,15 @@ function Articles({ getArticles, list, removeArticle}) {
 		getArticles();
   }, []);
 
- 
+ const removeSuccesHandle = () => {
+  Swal.fire(
+    'Deleted!',
+    'Article has been deleted.',
+    'success'
+  );
+ }
+
+ const handleError = (rej) => Swal.fire("Oops", rej, "error");
 
 	const removeHandler = (id) => (e) => {
 		Swal.fire({
@@ -34,15 +43,7 @@ function Articles({ getArticles, list, removeArticle}) {
 			cancelButtonText: 'No, cancel!',
 		}).then((result) => {
 			if (result.isConfirmed) {
-				new Promise((resolve) => {
-					removeArticle(id, resolve);
-				}).then(() => {
-					Swal.fire(
-						'Deleted!',
-						'Article has been deleted.',
-						'success'
-					);
-				});
+        actionWrap(removeArticle, removeSuccesHandle, handleError, id)
 			}
 		});
 	};

@@ -10,6 +10,8 @@ import Categories from './pages/categories';
 import Users from './pages/users';
 import ArticleEdit from './pages/articleEdit';
 import ArticleAdd from './pages/articleAdd';
+import CategoryAdd from './pages/categoryAdd';
+import CategoryEdit from './pages/categoryEdit';
 
 function App() {
 	return (
@@ -35,6 +37,16 @@ function App() {
 					exact
 					path={'/admin/categories'}
 					component={Categories}
+				/>
+        <ProtectedRoute
+					exact
+					path={'/admin/categories/add'}
+					component={CategoryAdd}
+				/>
+        <ProtectedRoute
+					exact
+					path={'/admin/categories/:id'}
+					component={CategoryEdit}
 				/>
 				<ProtectedRoute exact path={'/admin/users'} component={Users} />
 			</Switch>

@@ -31,10 +31,7 @@ export const requestRemoveArticle = async (id) => {
 
 export const requestAddArticle = async (formData) => {
   try {
-    const { data } = await axios.post(API.ARTICLES, formData, {
-      headers: { "Access-Control-Allow-Origin": "*" },
-      mode: "cors",
-    });
+    const { data } = await axios.post(API.ARTICLES, formData);
     return data;
   } catch (error) {
     return {
@@ -79,6 +76,55 @@ export const requestCategories = async (params) => {
   try {
     const query = params ? Object.keys(params).reduce((acc, key) => acc+`${key}=${params[key]}&`, "?") : '';
     const { data } = await axios.get(API.CATEGORIES+query);
+    return data;
+  } catch (error) {
+    showError(error);
+  }
+};
+
+export const requestGetCategory = async (id) => {
+  try {
+    const { data } = await axios.get(API.CATEGORIES + id);
+    return data;
+  } catch (error) {
+    return {
+      error: {
+        message: error.response.data.message,
+      },
+    };
+  }
+};
+
+export const requestEditCategory = async (formData, id) => {
+  try {
+    const { data } = await axios.patch(API.CATEGORIES + id, formData);
+    return data;
+  } catch (error) {
+    console.log(error.response);
+    return {
+      error: {
+        message: error.response.data.message,
+      },
+    };
+  }
+};
+
+export const requestAddCategory = async (formData) => {
+  try {
+    const { data } = await axios.post(API.CATEGORIES, formData);
+    return data;
+  } catch (error) {
+    return {
+      error: {
+        message: error.response.data.message,
+      },
+    };
+  }
+};
+
+export const requestRemoveCategory = async (id) => {
+  try {
+    const { data } = await axios.delete(API.CATEGORIES + id);
     return data;
   } catch (error) {
     showError(error);

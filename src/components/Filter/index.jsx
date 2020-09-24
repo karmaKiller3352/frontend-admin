@@ -40,11 +40,9 @@ function Filter({ catList, getCategories, getArticles, pagination }) {
 	}, [getCategories]);
 
 	useEffect(() => {
-    console.log(query)
 		getArticles(query);
   }, [query, getArticles]);
   
-  console.log(pagination)
 	const showPagination = () => {
     if(!pagination) return null
     

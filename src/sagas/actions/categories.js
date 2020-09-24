@@ -4,7 +4,7 @@ import {
 	SAGA_ADD_CATEGORY,
 	SAGA_EDIT_CATEGORY,
 	SAGA_SET_CATEGORY,
-} from '../constants/catgories';
+} from '../constants/categories';
 
 // - Categories
 export function getCategories(params = null) {
@@ -57,3 +57,4 @@ export function editCategory(formData, id, resolve, reject) {
 		},
 	};
 }
+

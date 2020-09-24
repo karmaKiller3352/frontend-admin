@@ -1,8 +1,11 @@
-import { ADD_CATEGORY, GET_CATEGORIES, REMOVE_CATEGORY, SET_CATEGORY } from "../constants/catgories";
+import { ADD_CATEGORY, GET_CATEGORIES, REMOVE_CATEGORY, SET_CATEGORY } from "../constants/categories";
 
 const initState = {
 	list: [],
-	opened: {},
+	opened: {
+    category: {},
+    articles: {},
+  },
 };
 
 const categoriesReducer = (state = initState, action) => {
