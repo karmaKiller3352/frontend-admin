@@ -3,7 +3,9 @@ import {
 	SAGA_REMOVE_CATEGORY,
 	SAGA_ADD_CATEGORY,
 	SAGA_EDIT_CATEGORY,
-	SAGA_SET_CATEGORY,
+  SAGA_SET_CATEGORY,
+  SAGA_REMOVE_ARTICLE_FROM_CAT,
+  SAGA_ACTIVITY_CATEGORY,
 } from '../constants/categories';
 
 // - Categories
@@ -58,3 +60,24 @@ export function editCategory(formData, id, resolve, reject) {
 	};
 }
 
+export function removeArticleFromCat(id, resolve) {
+	return {
+		type: SAGA_REMOVE_ARTICLE_FROM_CAT,
+		payload: {
+      id,
+			resolve,
+		},
+	};
+}
+
+export function changeActivityCategory(data, id, resolve, reject) {
+	return {
+		type: SAGA_ACTIVITY_CATEGORY,
+		payload: {
+			data,
+			id,
+			resolve,
+			reject,
+		},
+	};
+}

@@ -79,9 +79,9 @@ function ArticleEdit({ editArticle, setArticle, getCategories, catList }) {
       if(!previewImage){
         data.set("image", "");
       }
-      if (!data.get("image")) {
-        data.set("image", currentFields.image);
-      }
+      if (!data.get('image').size) {
+				data.set('image', currentFields.image);
+			}
       if (data.get("categories") === "Not choosed") {
         data.delete("categories");
       }

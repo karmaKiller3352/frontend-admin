@@ -66,7 +66,7 @@ function FilterCategories({  getCategories, pagination }) {
 			<Row>
 				<Col>
 					<Form.Group>
-						<Form.Label>Search article</Form.Label>
+						<Form.Label>Search categories</Form.Label>
 						<FormControl
 							type='text'
 							name='search'

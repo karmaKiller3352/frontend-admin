@@ -1,37 +1,34 @@
 import React, { useEffect } from 'react';
 import PageWrapper from '../layots/PageWrapper';
 import { connect } from 'react-redux';
-import {
-	Form,
-	Row,
-	Col,
-	FormControl,
-	ListGroup,
-	Button,
-} from 'react-bootstrap';
+import { Row, Col, ListGroup, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
-import { getArticles, removeArticle } from '../sagas/actions/articles';
+import {
+	getArticles,
+	removeArticle,
+	changeActivityArticle,
+} from '../sagas/actions/articles';
 import { useHistory, Link } from 'react-router-dom';
-import Filter from "../components/Filter";
+import Filter from '../components/Filter';
 import actionWrap from '../utils/actionWrapper';
+import Tumbler from '../components/ui/Tumbler';
 
-function Articles({ getArticles, list, removeArticle}) {
-
+function Articles({ getArticles, list, removeArticle, changeActivityArticle }) {
 	const history = useHistory();
 	useEffect(() => {
 		getArticles();
-  }, []);
+	}, []);
 
- const removeSuccesHandle = () => {
-  Swal.fire(
-    'Deleted!',
-    'Article has been deleted.',
-    'success'
-  );
- }
+  useEffect(() => {
+		
+	}, [list]);
 
- const handleError = (rej) => Swal.fire("Oops", rej, "error");
+	const removeSuccesHandle = () => {
+		Swal.fire('Deleted!', 'Article has been deleted.', 'success');
+	};
+
+	const handleError = (rej) => Swal.fire('Oops', rej, 'error');
 
 	const removeHandler = (id) => (e) => {
 		Swal.fire({
@@ -43,8 +40,14 @@ function Articles({ getArticles, list, removeArticle}) {
 			cancelButtonText: 'No, cancel!',
 		}).then((result) => {
 			if (result.isConfirmed) {
-        actionWrap(removeArticle, removeSuccesHandle, handleError, id)
+				actionWrap(removeArticle, removeSuccesHandle, handleError, id);
 			}
+		});
+	};
+
+	const activityHandler = (id, active) => () => {
+		return new Promise((resolve) => {
+			actionWrap(changeActivityArticle, resolve, handleError, { active: !active }, id);
 		});
 	};
 
@@ -59,17 +62,13 @@ function Articles({ getArticles, list, removeArticle}) {
 					<h2>Articles</h2>
 				</Col>
 				<Col className='text-right'>
-					<Button
-						onClick={addHandler}
-						type='button'
-						className='btn-success'
-					>
+					<Button onClick={addHandler} type='button' className='btn-success'>
 						Add article
 					</Button>
 				</Col>
 			</Row>
 
-			<Filter/>
+			<Filter />
 
 			<Row>
 				<Col>
@@ -80,20 +79,26 @@ function Articles({ getArticles, list, removeArticle}) {
 									<ListGroup.Item key={article._id}>
 										{article.title}
 
-										<button
-											type='button'
-											className='close'
-											onClick={removeHandler(article._id)}
-										>
-											<span aria-hidden='true'>×</span>
-										</button>
-										<Link
-											type='button'
-											className='edit-btn'
-											to={`/admin/articles/${article._id}`}
-										>
-											<span aria-hidden='true'>✎</span>
-										</Link>
+										<div className='action-btn-group'>
+											<Tumbler
+												action={activityHandler(article._id, article.active)}
+												active={article.active}
+											/>
+											<button
+												type='button'
+												className='close'
+												onClick={removeHandler(article._id)}
+											>
+												<span aria-hidden='true'>×</span>
+											</button>
+											<Link
+												type='button'
+												className='edit-btn'
+												to={`/admin/articles/${article._id}`}
+											>
+												<span aria-hidden='true'>✎</span>
+											</Link>
+										</div>
 									</ListGroup.Item>
 								);
 							})}
@@ -107,7 +112,8 @@ function Articles({ getArticles, list, removeArticle}) {
 
 const mapDispatchtoProps = {
 	getArticles,
-  removeArticle,
+	removeArticle,
+	changeActivityArticle,
 };
 
 const mapStatetoProps = (state) => ({

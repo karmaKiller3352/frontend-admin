@@ -1,4 +1,13 @@
 @import '~bootstrap/scss/bootstrap.scss';
+* {
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+	outline: none;
+}
+
 button {
 	&:focus {
 		border: none !important;
@@ -63,8 +72,54 @@ button {
 }
 
 .false-link {
-  display: inline-block;
-  padding-bottom: 1px;
-  border-bottom: 1px dashed;
+	display: inline-block;
+	padding-bottom: 1px;
+	border-bottom: 1px dashed;
 	cursor: pointer;
+}
+.articles {
+	margin-top: 30px;
+	margin-bottom: 50px;
+}
+.articles-wrapper {
+	flex-wrap: wrap;
+	display: flex;
+
+	padding: 15px;
+	border: 1px solid #ced4da;
+	border-radius: 0.25rem;
+
+	.article__item {
+		padding: 5px;
+		margin-right: 5px;
+		margin-top: 5px;
+		border: 1px solid #ced4da;
+		border-radius: 0.25rem;
+		a {
+			color: inherit;
+		}
+		.close {
+			margin-left: 10px;
+		}
+	}
+}
+
+.list-group-item {
+	display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  @media screen and (max-width: 600px){
+    justify-content: center;
+  }
+}
+
+.action-btn-group {
+	display: flex;
+	min-width: 220px;
+	justify-content: space-between;
+  align-items: center;
+  @media screen and (max-width: 600px){
+    margin-top: 5px;
+    width: 100%;
+  }
 }

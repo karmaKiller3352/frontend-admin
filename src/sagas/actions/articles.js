@@ -3,7 +3,8 @@ import {
 	SAGA_REMOVE_ARTICLE,
 	SAGA_ADD_ARTICLE,
 	SAGA_EDIT_ARTICLE,
-	SAGA_SET_ARTICLE,
+  SAGA_SET_ARTICLE,
+  SAGA_ACTIVITY_ARTICLE,
 } from '../constants/articles';
 
 // - Articles
@@ -57,3 +58,16 @@ export function editArticle(formData, id, resolve, reject) {
 		},
 	};
 }
+
+export function changeActivityArticle(data, id, resolve, reject) {
+	return {
+		type: SAGA_ACTIVITY_ARTICLE,
+		payload: {
+			data,
+			id,
+			resolve,
+			reject,
+		},
+	};
+}
+
